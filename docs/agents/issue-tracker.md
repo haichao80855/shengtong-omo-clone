@@ -1,11 +1,42 @@
-# Issue tracker
+# Issue tracker 与 Matt 工作流
 
 Repository: haichao80855/shengtong-omo-clone
 Tracker: GitHub Issues
 
-Specs and implementation tickets live in GitHub Issues.
-Link each implementation ticket to its originating spec.
-Record blocking dependencies using GitHub issue numbers (#1, #2, ...).
+## 工作路径
 
-Only start tickets whose blockers are resolved.
-Record acceptance evidence before closing implementation tickets.
+取证解决可观察事实；grill-with-docs 澄清范围/术语/决策；to-spec 更新规格；to-tickets 拆可演示窄切片；implement 驱动公共边界 TDD 与 code-review。新会话应能从工单、规格和证据恢复上下文。
+
+用户已授权本次规格与工单修复，包括改写原父工单和发布子工单，不重复索取修复许可。以后改变未授权范围或接受偏差仍应记录用户决定。
+
+## 标签
+
+| 标签 | 含义 |
+| --- | --- |
+| spec / epic | 总规格 / 模块汇总，不能直接领取实施 |
+| discovery | 取证或验证未知项的可执行任务 |
+| implementation | 有明确用户结果的业务切片 |
+| verification | 范围与跨模块验收 |
+| needs-evidence | 规则/基线缺口，禁止凭猜测实施 |
+| blocked | 仍有未解决原生依赖或前提 |
+| ready-for-agent | 工单自包含且当前可开始，不是所有计划任务的默认状态 |
+
+开始条件：ready-for-agent、全部阻塞完成、无影响结果的未知项。取证任务不要求已有业务证据，但需具备明确访问前提。
+
+取证完成后填入实施正文的证据 ID、规则 ID、路由/状态与可复现预期；删去不成立假设、校准依赖，再移除 needs-evidence。全部阻塞解除才移除 blocked 并加 ready-for-agent。关闭取证工单不会自动完成内容审查。
+
+## 关系与粒度
+
+- 每个任务引用总规格；业务任务只有一个原生父工单，可引用其他模块。
+- 使用原生 sub-issue 与 blocked-by，正文保留可读关系，二者一致。父工单汇总，不能同时阻塞子工单形成循环。
+- 工单编号不是实施顺序；领取任务图的就绪节点。
+- 模块取证范围过大时，按页面/流程拆取证子任务，并把实施依赖改到其实际需要的证据子任务；证据充分的切片无需等完整模块取证结束。
+- 实施子工单是候选切片，存在性与粒度需取证确认。不成立时记录范围依据；新增页面补工单和任务图。
+- 切片包括必要的数据、API、UI 和测试，不拆为全量后端/前端水平任务。
+- 测试边界为 UI/E2E、公开 API 集成、视觉差分；持久化通过刷新/新会话/查询 API 验证。
+
+## 关闭
+
+记录来源证据、测试或验证入口、结果、关键截图及差异处置；规则变化同步台账/规格。HAR/Mock 与真实后端测试分别记录。未验证或未实现不能标记 completed。
+
+父工单在全部范围内页面/状态映射到已验收切片后关闭；最终执行覆盖任务。影响目标的未知项和未接受偏差保持开放。
